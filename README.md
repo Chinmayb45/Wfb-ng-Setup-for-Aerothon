@@ -12,23 +12,19 @@
 
 ### 📡 Port Mapping Reference
 
-| Service | IP Address | Port | Protocol | Purpose |
+|         Service          | IP Address  |   Port  | Protocol |              Purpose                 |
 
-| :--- | :--- | :--- | :--- | :--- |
+| \*\*MAVLink (WFB-NG)\*\* | `127.0.0.1` | `14560` |    UDP   | Downlink telemetry to Ground Station |
 
-| \*\*MAVLink (WFB-NG)\*\* | `127.0.0.1` | `14560` | UDP | Downlink telemetry to Ground Station |
+| \*\*MAVLink (Local)\*\*  | `127.0.0.1` | `14551` |    UDP   | Local autonomous mission script feed |
 
-| \*\*MAVLink (Local)\*\* | `127.0.0.1` | `14551` | UDP | Local autonomous mission script feed |
+| \*\*MAVLink (QGC)\*\*    | `127.0.0.1` | `14550` |    UDP   | QGroundControl telemetry feed        |
 
-| \*\*MAVLink (QGC)\*\* | `127.0.0.1` | `14550` | UDP | QGroundControl telemetry feed |
+| \*\*Video (Ingest)\*\*   | `127.0.0.1` | `5602`  |    UDP   | Drone camera encoding destination    |
 
-| \*\*Video (Ingest)\*\* | `127.0.0.1` | `5602` | UDP | Drone camera encoding destination |
-
-| \*\*Video (Output)\*\* | `127.0.0.1` | `5600` | UDP | Ground Station GStreamer feed |
+| \*\*Video (Output)\*\*   | `127.0.0.1` | `5600`  |    UDP   | Ground Station GStreamer feed        |
 
 
-
-\---
 
 
 
@@ -38,7 +34,7 @@ To ensure monitor mode stability on the Vicharak Axon, the Wi-Fi driver must be 
 
 
 
-\*\*1. Clone the Source \& Patch\*\*
+1. Clone the Source \& Patch
 
 Pull the specific WFB-NG compatible driver source and prepare it for building:
 
@@ -54,7 +50,7 @@ nano core/rtw\_mlme\_ext.c  # Apply monitor mode stability patch here
 
 
 
-\*\*2. Force DKMS Build and Install\*\*
+2. Force DKMS Build and Install
 
 Register, build, and install the module into the active kernel tree:
 
@@ -70,7 +66,7 @@ sudo dkms install rtl88x2eu/5.15.0.1
 
 
 
-\*\*3. Load the Module\*\*
+3. Load the Module
 
 Wake up the driver and verify the interface (e.g., `wlxfc3...`) appears:
 
@@ -84,7 +80,6 @@ iw dev
 
 
 
-\---
 
 
 
@@ -94,7 +89,7 @@ To prevent port collisions, `mavlink-router` duplicates the physical Pixhawk ser
 
 
 
-\*\*1. Configure the Router\*\*
+1. Configure the Router
 
 ```bash
 
@@ -104,7 +99,7 @@ sudo nano /etc/mavlink-router/main.conf
 
 
 
-\*\*2. Apply the Split Configuration\*\*
+2. Apply the Split Configuration
 
 Replace the configuration with the following routing block:
 
@@ -146,7 +141,7 @@ Port = 14551
 
 
 
-\*\*3. Apply Changes\*\*
+3. Apply Changes
 
 ```bash
 
@@ -156,8 +151,6 @@ sudo systemctl restart mavlink-router
 
 
 
-\---
-
 
 
 ## 🌉 Phase 3: WFB-NG Port Configurations
@@ -166,7 +159,7 @@ The over-the-air bridge must be mapped to intercept the specific telemetry and v
 
 
 
-\*\*1. Drone Configuration (`/etc/wifibroadcast.cfg`)\*\*
+1. Drone Configuration (`/etc/wifibroadcast.cfg`)
 
 Configures the drone to listen for outgoing data:
 
@@ -204,7 +197,7 @@ peer = 'listen://0.0.0.0:5602'
 
 
 
-\*\*2. Ground Station Configuration (`/etc/wifibroadcast.cfg`)\*\*
+2. Ground Station Configuration (`/etc/wifibroadcast.cfg`)
 
 Configures the GS to push incoming radio data to the correct viewers:
 
@@ -240,7 +233,7 @@ peer = 'connect://127.0.0.1:5600'
 
 
 
-\*\*3. Restart WFB-NG Services\*\*
+3. Restart WFB-NG Services
 
 ```bash
 
@@ -252,8 +245,6 @@ sudo systemctl restart wifibroadcast@gs     # Run on Ground Station
 
 
 
-\---
-
 
 
 ## 📷 Phase 4: Camera \& Video Encoding
@@ -262,7 +253,7 @@ To stream video efficiently, `camera.py` leverages hardware-accelerated GStreame
 
 
 
-\*\*1. GStreamer Initialization\*\*
+1. GStreamer Initialization
 
 Add this to the Python OAK-D initialization block:
 
@@ -286,7 +277,7 @@ out\_wfb = cv2.VideoWriter(wfb\_pipeline, cv2.CAP\_GSTREAMER, 0, 30, (640, 360),
 
 
 
-\*\*2. Pipeline Injection\*\*
+2. Pipeline Injection
 
 Inside the main loop, write the fetched `rgbFrame` directly to the encoder:
 
@@ -300,15 +291,12 @@ if out\_wfb and out\_wfb.isOpened():
 
 
 
-\---
-
-
 
 ## 🚀 Phase 5: Mission Execution \& Dual Viewing
 
 
 
-\*\*1. Launch the Autonomous Mission (Drone / Laptop 1)\*\*
+1. Launch the Autonomous Mission (Drone / Laptop 1)
 
 Connect to the drone via VNC and execute the master mission script. This spawns the camera process and initiates local obstacle avoidance processing.
 
@@ -320,13 +308,13 @@ python3 vfh1.py
 
 
 
-\*\*2. View Telemetry (Ground Station / Laptop 2)\*\*
+2. View Telemetry (Ground Station / Laptop 2)
 
 Open \*\*QGroundControl\*\*. It will automatically detect the MAVLink stream pushed to `14550` and connect to the drone.
 
 
 
-\*\*3. View Video Feed (Ground Station / Laptop 2)\*\*
+3. View Video Feed (Ground Station / Laptop 2)
 
 Run the following command in the terminal to decode the low-latency H.264 video feed:
 
