@@ -1,4 +1,4 @@
-\# 🚁 WFB-NG Autonomous Drone \& Video Streaming Architecture
+# 🚁 WFB-NG Autonomous Drone \& Video Streaming Architecture
 
 
 
@@ -10,7 +10,7 @@
 
 
 
-\### 📡 Port Mapping Reference
+### 📡 Port Mapping Reference
 
 | Service | IP Address | Port | Protocol | Purpose |
 
@@ -32,7 +32,7 @@
 
 
 
-\## 🛠️ Phase 1: RTL8812EU Driver Compilation
+## 🛠️ Phase 1: RTL8812EU Driver Compilation
 
 To ensure monitor mode stability on the Vicharak Axon, the Wi-Fi driver must be patched and built from source using DKMS.
 
@@ -88,7 +88,7 @@ iw dev
 
 
 
-\## 🔀 Phase 2: MAVLink Telemetry Routing
+## 🔀 Phase 2: MAVLink Telemetry Routing
 
 To prevent port collisions, `mavlink-router` duplicates the physical Pixhawk serial stream to feed both the local Python script and the WFB-NG transmitter.
 
@@ -160,7 +160,7 @@ sudo systemctl restart mavlink-router
 
 
 
-\## 🌉 Phase 3: WFB-NG Port Configurations
+## 🌉 Phase 3: WFB-NG Port Configurations
 
 The over-the-air bridge must be mapped to intercept the specific telemetry and video ports.
 
@@ -256,7 +256,7 @@ sudo systemctl restart wifibroadcast@gs     # Run on Ground Station
 
 
 
-\## 📷 Phase 4: Camera \& Video Encoding
+## 📷 Phase 4: Camera \& Video Encoding
 
 To stream video efficiently, `camera.py` leverages hardware-accelerated GStreamer to pack RGB frames into H.264 UDP packets.
 
@@ -304,7 +304,7 @@ if out\_wfb and out\_wfb.isOpened():
 
 
 
-\## 🚀 Phase 5: Mission Execution \& Dual Viewing
+## 🚀 Phase 5: Mission Execution \& Dual Viewing
 
 
 
