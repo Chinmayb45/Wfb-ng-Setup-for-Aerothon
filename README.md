@@ -1,12 +1,9 @@
 # 🚁 WFB-NG Autonomous Drone \& Video Streaming Architecture
 
 
+ 
 
-> \*\*Deployment Context:\*\* Aerothon 26 Mission (Vicharak Axon \& Pixhawk)
-
-> 
-
-> \*\*System Overview:\*\* This architecture bridges a companion computer (Vicharak Axon) and a flight controller (Pixhawk) to a Ground Station using the WFB-NG long-range Wi-Fi protocol. It achieves simultaneous MAVLink routing for autonomous flight control and dual-view video processing (local VNC + remote WFB-NG encoding).
+> System Overview: This architecture bridges a companion computer (Vicharak Axon) and a flight controller (Pixhawk) to a Ground Station using the WFB-NG long-range Wi-Fi protocol. It achieves simultaneous MAVLink routing for autonomous flight control and dual-view video processing (local VNC + remote WFB-NG encoding).
 
 
 
